@@ -1,0 +1,114 @@
+html {
+    height: 100%;
+    font-family: "PingFang SC", monospace;
+}
+
+body {
+    margin: 0;
+    background-color: #f1f1f1;
+    background-size: 100% 100%;
+}
+
+
+/* 中间部分 */
+#middle {
+    width: 100%;
+    text-align: center;
+}
+
+/* 图片 */
+#cover-title img{
+    margin-top: 10%;
+    margin-bottom: 80px;
+    width: 35%;
+}
+
+/* 搜索框 */
+#form-wrapper {
+    display: flex;
+}
+
+#dropdown {
+    cursor: pointer;
+    margin-left: auto;
+    display: flex;
+    align-self: center;
+    border: 1px solid #ddd;
+    border-right: none;
+    height: 45px;
+    min-width: 150px;
+    text-align: center;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    position: relative;
+}
+
+#display-content {
+    padding: 0 20px;
+    align-self: center;
+    display: block;
+    margin: auto;
+}
+
+#dropdown-content {
+    position: absolute;
+    top: 46px;
+    width: 100%;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    background-color: #f9f9f9;
+    display: none;
+}
+
+#dropdown-content div {
+    height: 50px;
+    line-height: 50px;
+}
+
+#dropdown-content div:hover {
+    background-color: #c1c1c1;
+}
+
+/* 输入框 */
+input[type="text"] {
+    align-self: center;
+    width: 470px;
+    height: 45px;
+    font-size: 16px;
+    padding: 0 0 0 20px;
+    border: 1px solid #ddd;
+}
+
+input[type="text"]:focus {
+    outline: none;
+}
+
+/* 提交按钮 */
+input[type="submit"] {
+    height: 47px;
+    width: 120px;
+    border: 1px solid #ddd;
+    border-left: none;
+    background-color: #222;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    align-self: center;
+    margin-right: auto;
+    cursor: pointer;
+}
+
+
+/* 底部 */
+#footer {
+    background-color: black;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+}
+
+#footer p {
+    color: white;
+    font-weight: 300;
+}

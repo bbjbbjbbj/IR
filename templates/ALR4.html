@@ -1,0 +1,282 @@
+{% load static %} {% load sb %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Search Result</title>
+    <link rel="stylesheet" href="static/css/ALR2.css">
+    <link href="static/css/hover-min.css" rel="stylesheet" media="all">
+    <script src="static/js/vue.js"></script>
+    <script src="static/js/axios.js"></script>
+    <script src="static/js/jquery.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- navigation -->
+        <div id="navigation">
+            <img src="static/img/cover.png">
+            <form role="form" action="Search" method="get">
+                <div id="form-wrapper">
+                    <!-- here!!!! -->
+                    <div id="dropdown">
+                        <div id="display-content">
+                            {% verbatim %} {{ selected }} {% endverbatim %}
+                        </div>
+                        <div id="dropdown-content">
+                            <div v-for="selection in selections" @click="change(selection)">
+                                {% verbatim %} {{ selection.name }} {% endverbatim %}</div>
+                        </div>
+                    </div>
+                    <input type="text" name="keywords" placeholder="Start searching..." v-model="inputData" />
+                    <input type="submit" value="Go" @click.prevent="submitData">
+                    <input type="hidden" name="page" value="1">
+                </div>
+            </form>
+        </div>
+        <!-- separate -->
+        <div id="separate"></div>
+        <!-- search result -->
+        <div id="search-result">
+            <span>
+                    Searching time: {{ time }}
+                    &nbsp; &nbsp; &nbsp; &nbsp;
+                    Count: {{ count }}
+            </span>
+            <br>
+            {% if al == 'Wildcard' or al == 'Correction' %}
+            <span style="color:rgb(241, 236, 236)">You probably want to find: </span> {% for i in maybefinding %} {% if not forloop.last %}
+            <a style="color:rgb(241, 236, 236)" href="./Find?keywords={{i}}&algorithm=Fulltext&page=1">{{ i}}</a>
+            <span style="color:rgb(241, 236, 236)"> ,</span> {% else %}
+            <a style="color:rgb(241, 236, 236)" href="./Find?keywords={{i}}&algorithm=Fulltext&page=1">{{ i}}</a>
+            <span style="color:rgb(241, 236, 236)"> ?</span> {% endif %} {% endfor %} {% else %} {% endif %}
+        </div>
+        <!-- results -->
+        <div id="result-area">
+                {% for contact in contacts %}
+            <div class="return-results" >
+                <!-- <div :class="{'score': true, 'score-color-1': parseFloat(result.score) < 0.2, 'score-color-2': parseFloat(result.score) >= 0.2 && parseFloat(result.score) < 0.4, 'score-color-3': parseFloat(result.score) >= 0.4 && parseFloat(result.score) < 0.6, 'score-color-4': parseFloat(result.score) >= 0.6 && parseFloat(result.score) < 0.8, 'score-color-5': parseFloat(result.score) >= 0.8}">
+                    {% verbatim %} {{ result.score }} {% endverbatim %}</div> -->
+             <div class = 'score'>{{contact|get_item:'score' }}</div> 
+                <div class="result-title">
+                    <div class="para-block"></div>
+                    <h3 style="white-space: nowrap; width: 350px; height: 50px; overflow: hidden; text-overflow:ellipsis"><a target="_blank" style="color: black; text-decoration: none;" href="{{contact|get_item:'url' }}">{{contact|get_item:'title' |safe}}</a></h3>
+                </div>
+                <div class="separate-inblock"></div>
+                <span class="author" style="width: 200px; height: 30px; overflow: hidden; text-overflow:ellipsis">Author: {{contact|get_item:'author'|slice:":30"}}...</span>
+                <br>
+                <span class="publishDate">publishDate: {{contact|get_item:'publishDate'}}</span>
+                <br>
+                <span class="pulbPage">pulbPage: {{contact|get_item:'pulbPage'}}</span>
+                <br>
+                <div class="hr">{{contact|get_item:'abstract'|safe|slice:":400"}}...</div>
+                <p></p> 
+            </div>
+            {% endfor %}
+        </div>
+        <div id="pages">
+                <div id="pages-wrapper">
+                    <div class="prev-page hvr-glow">
+                        {% if contacts.has_previous %}
+                        <span>
+                            <<<</span> {% else %} <span>
+                                <<<</span> {% endif %} </div> {% for p in pagerange %} {% if p == page %}
+                    <div class="available-pages hvr-glow current-page"><span>
+                                        <a style="color: black; text-decoration: none"
+                                            href="http://localhost:8000/Find?keywords={{keywords}}&algorithm={{al}}&page={{p}}">{{ p }}</a></span>
+                    </div>
+                    {% else %}
+                    <div class="available-pages hvr-glow">
+                        <a style="color: white; text-decoration: none" href="http://localhost:8000/Find?keywords={{keywords}}&algorithm={{al}}&page={{p}}"><span>{{ p }}</a></span>
+                    </div>
+                    {% endif %} {% endfor %}
+    
+                    <div class="next-page hvr-glow">
+                        {% if contacts.has_next %}
+                        <span>>>></span> {% else %}
+                        <span>>>></span> {% endif %}
+                    </div>
+                </div>
+            </div>
+        <!-- separate -->
+        <div id="separate"></div>
+        <!-- footer -->
+        <div id="footer">
+            <p>Members: Bao Jie, Lu Yuchen, Chen Qianlun, Chen Xiangling</p>
+            <p>School of information, Central University of Finance and Economics</p>
+        </div>
+    </div>
+
+    <script>
+        // jQuery Animation
+        $(document).ready(function () {
+            $(document).click(function () {
+                $("#dropdown-content").slideUp(500);
+            });
+            $("#display-content").click(function () {
+                $("#dropdown-content").slideToggle(500);
+                event.stopPropagation();
+            });
+        });
+        // Vue
+        // @click.prevent="sayHello"
+        // 在 Vue 的参数对象里面, this 指代 Vue 本身
+        // v-directive:attribute.decorator="value" 
+        let app = new Vue({ 
+            // element: 指定 Vue 绑定实例的元素
+            el: "#app",
+            // 生命周期钩子: 创建 Vue 对象的时候 created -> mounted 
+            // 写在 created 里面的理由(20 岁生日)
+            created() {
+                let sourceUrl = window.location.href; // 拿到上一个页面的请求所发送的数据
+                let keyword = sourceUrl.split("&")[0].split("=")[1];
+                let algorithm = sourceUrl.split("&")[1].split("=")[1];
+                this.inputData = this.keyword = keyword.replace(/%20/g, " ").replace(/%22/g, "\"");
+                this.selected = this.algorithm = algorithm;
+                // axios 采用了 ECMAScript 6 的新语法: Promise 对象
+                // 这种语法避免了原生回调函数的缺点, 能够解除代码的耦合
+                axios({
+                    methods: "GET",
+                    url: "http://localhost:8000/Retrieval",
+                    params: {
+                        keywords: keyword,
+                        algorithm: algorithm,
+                        page: "1"
+                    }
+                }).then((response) => {
+                    this.results = response.data;
+                });
+            },
+            data: {
+                keyword: "", // URL 里面的 keywords
+                algorithm: "", // URL 里面的 algorithm
+                inputData: "", // 双向数据绑定
+                selected: "Wildcard", 
+                selections: [{
+                    name: "Correction"
+                }, {
+                    name: "Wildcard"
+                }, {
+                    name: "Fulltext"
+                }, {
+                    name: "Phrase"
+                }], // v-for: 批量渲染
+                results: {} // 接受服务器返回的结果(Object)
+            },
+            // 过滤器 
+            filters: {
+                formatLine(value) {
+                    // 防止出现一种情况：在去掉 `, ` 后长度小于 24 导致 undefined 问题
+                    let length = 0;
+                    let a = value.split(", ");
+                    a.forEach(item => {
+                        length += item.length;
+                    });
+                    if (length > 25) {
+                        let sum = 0, i = 0;
+                        while (sum < 25) {
+                            sum += a[i].length;
+                            i++;
+                        }
+                        return a.slice(0, i - 1).join(", ") + ", ...";
+                    } else {
+                        return value;
+                    }
+                }
+            },
+            
+            methods: {
+                getFormatTitle(value) {
+                    let offset = 25;
+                    if (/<em/.test(value.substring(0, 26))) {
+                        offset += 9;
+                    }
+                    if (value.length > offset) {
+                        return value.substring(0, offset + 1) + " ...";
+                    } else {
+                        return value;
+                    }
+                },
+                getFormatAbstract(value) {
+                    if (value.length > 1200) {
+                        return value.substring(0, 1201) + ", ...";
+                    } else {
+                        return value;
+                    }
+                },
+                change(selection) {
+                    this.selected = selection.name;
+                },
+                navigateTo(targetUrl) {
+                    window.open(targetUrl);
+                },
+                submitData() {
+                    if (this.selected === "Fulltext") {
+                    	let wordList = this.inputData.split(" ");
+                        let flag = 0;
+                        wordList.forEach((item, index) => {
+                            if (!/^[a-z]+$/.test(item)) {
+                                alert("Bad input!");
+                                flag = 1;
+                            }
+                        });
+                        if (flag === 1) {
+                            return;
+                        }
+                    } else if (this.selected === "Correction") {
+                        let wordList = this.inputData.split(" ");
+                        let count = 0;
+                        let flag = 0;
+                        wordList.forEach((item, index) => {
+                            if (/^[a-z]+$/.test(item)) {
+                                count++;
+                            } else if(!/^\"[a-z]+\"$/.test(item)) {
+                                flag = 1;
+                            }
+                        });
+                        if (count === 0 || flag === 1) {
+                            alert("Bad input!");
+                            return;
+                        }
+                    } else if (this.selected === "Wildcard") {
+                    	let wordList = this.inputData.split(" ");
+                        let count = 0;
+                        let flag = 0;
+                        wordList.forEach((item, index) => {
+                            if (/^[a-z]*\*[a-z]*$/.test(item) && item.length > 1) {
+                                count++;
+                            } else if(!/^[a-z]+$/.test(item)) {
+                                flag = 1;
+                            }
+                        });
+                        if (count === 0 || flag === 1) {
+                            alert("Bad input!");
+                            return;
+                        }
+                    } else {
+                    	let wordList = this.inputData.split(" ");
+                        let flag = 0;
+                        wordList.forEach((item, index) => {
+                            if (!/^[a-z]+$/.test(item)) {
+                                flag = 1;
+                            }
+                        });
+                        if (flag === 1) {
+                            alert("Bad input!");
+                            return;
+                        }
+                    }
+                    location.href =
+                        `http://localhost:8000/Find?keywords=${this.inputData}&algorithm=${this.selected}&page=1`;
+                },
+                submitDataViaClicking(keyword) {
+                    location.href = `http://localhost:8000/Find?keywords=${keyword}&algorithm=Fulltext&page=1`;
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

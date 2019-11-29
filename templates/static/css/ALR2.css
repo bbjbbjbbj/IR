@@ -1,0 +1,310 @@
+html {
+    height: 100%;
+    font-family: "PingFang SC", monospace;
+}
+
+body {
+    margin: 0;
+    background-color: #f1f1f1;
+    background-size: 100% 100%;
+}
+
+#navigation {
+    height: 81px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid #ebebeb;
+    z-index: 301;
+    background-color: rgba(255, 255, 255, 0.85);
+    position: fixed;
+}
+
+#navigation img {
+    align-self: center;
+    display: block;
+    width: 15%;
+    float: left;
+}
+
+/* 搜索框 */
+#form-wrapper {
+    margin-top: 17px;
+    margin-left: 17px;
+    align-self: center;
+    display: inline-flex;
+    float: left;
+}
+
+#dropdown {
+    cursor: pointer;
+    display: flex;
+    align-self: center;
+    border: 1px solid #ddd;
+    border-right: none;
+    height: 45px;
+    min-width: 150px;
+    text-align: center;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    position: relative;
+}
+
+#display-content {
+    padding: 0 20px;
+    align-self: center;
+    display: block;
+    margin: auto;
+}
+
+#dropdown-content {
+    position: absolute;
+    top: 46px;
+    width: 100%;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    background-color: #f9f9f9;
+    display: none;
+}
+
+#dropdown-content div {
+    height: 50px;
+    line-height: 50px;
+}
+
+#dropdown-content div:hover {
+    background-color: #c1c1c1;
+}
+
+/* 输入框 */
+input[type="text"] {
+    align-self: center;
+    width: 470px;
+    height: 45px;
+    font-size: 16px;
+    padding: 0 0 0 20px;
+    border: 1px solid #ddd;
+}
+
+input[type="text"]:focus {
+    outline: none;
+}
+
+/* 提交按钮 */
+input[type="submit"] {
+    height: 47px;
+    width: 120px;
+    border: 1px solid #ddd;
+    border-left: none;
+    background-color: #222;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    align-self: center;
+    margin-right: auto;
+    cursor: pointer;
+}
+
+/* 分隔 */
+#separate {
+    height: 82px;
+}
+
+/* search result */
+#search-result {
+    text-align: center;
+    padding: 10px;
+    background-color: #000;
+    color: #fff;
+}
+
+#search-result span {
+    line-height: 35px;
+}
+
+.links {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.links:hover {
+    text-decoration: underline;
+    text-decoration-color: #f1f1f1;
+}
+
+/* 搜索结果 */
+#result-area {
+    padding: 30px 80px;
+    margin: 0;
+    display: block;
+    column-gap: 0;
+    column-count: 2;
+    -moz-column-gap: 0;
+    -webkit-column-gap: 0;
+}
+
+.return-results {
+    display: inline-block;
+    width: 520px;
+    min-height: 300px;
+    position: relative;
+    word-break: normal;
+    word-wrap: normal;
+    background-color: #fff;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    margin: 35px;
+    border-radius: 2px;
+    /* width: 520px; */
+    padding: 18px 15px;
+    position: relative;
+}
+
+.score {
+    float: right;
+    z-index: 300;
+    font-size: 48px;
+    margin-right: 30px;
+    margin-top: 20px;
+}
+
+.score-color-1 {
+    color: rgb(253, 210, 168);
+}
+
+.score-color-2 {
+    color: rgb(251, 174, 153);
+}
+
+.score-color-3 {
+    color: rgb(249, 138, 138);
+}
+
+.score-color-4 {
+    color: rgb(247, 102, 123);
+}
+
+.score-color-5 {
+    color: rgb(245, 66, 108);
+}
+
+.result-title div {
+    width: 5px;
+    height: 25px;
+    margin: 10px 15px;
+    background-color: black;
+    float: left;
+}
+
+.result-title h3 {
+    margin: 0;
+    float: left;
+    line-height: 45px;
+}
+
+.result-title h3:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.separate-inblock {
+    height: 50px;
+}
+
+.return-results span {
+    padding: 0 15px;
+}
+
+.hr {
+    height: 1px;
+    background-color: black;
+    margin: 16px 15px 0 15px;
+}
+
+.return-results p {
+    padding: 0 15px;
+    text-align: justify;
+}
+
+/* 翻页 */
+#pages {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+#pages-wrapper {
+    display: inline-block;
+    /* width: 70%; */
+}
+
+.prev-page,
+.next-page {
+    height: 45px;
+    width: 80px;
+    background-color: #000;
+    float: left;
+    cursor: pointer;
+}
+
+.prev-page {
+    margin-right: 20px;
+}
+
+.next-page {
+    margin-left: 20px;
+}
+
+.prev-page span,
+.next-page span {
+    color: #f1f1f1;
+    line-height: 45px;
+}
+
+.available-pages {
+    text-align: center;
+    display: inline-block;
+    height: 45px;
+    width: 45px;
+    float: left;
+    margin: 0 5px;
+    background-color: #000;
+    cursor: pointer;
+}
+
+.available-pages span {
+    line-height: 45px;
+    overflow: hidden;
+    color: #fff;
+}
+
+.current-page {
+    background-color: #fff !important;
+}
+
+.current-page span {
+    color: #000 !important;
+}
+
+
+/* 底部 */
+#footer {
+    background-color: black;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+}
+
+#footer p {
+    color: white;
+    font-weight: 300;
+}
+
+
+/* added */
+em {
+    color: red;
+}
+
+[v-cloak] {
+    visibility: hidden;
+}

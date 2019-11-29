@@ -1,0 +1,140 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>Literature.R™️</title>
+	<link rel="stylesheet" href="static/css/ALR1.css">
+	<script src="static/js/vue.min.js"></script>
+	<script src="static/js/axios.js"></script>
+	<script src="static/js/jquery.min.js"></script>
+</head>
+
+<body>
+	<div id="app">
+		<div id="middle">
+			<div id="cover-title">
+				<img src="static/img/cover.png">
+			</div>
+			<form role="form" action="Search" method="get">
+				<div id="form-wrapper">
+					<!-- here!!!! -->
+					<div id="dropdown">
+						<div id="display-content">
+							{% verbatim %} {{ selected }} {% endverbatim %}
+						</div>
+						<div id="dropdown-content">
+							<div v-for="selection in selections" @click="change(selection)">{% verbatim %}
+								{{ selection.name }} {% endverbatim %}</div>
+						</div>
+					</div>
+					<input type="text" name="keywords" placeholder="Start searching..." v-model="inputData" />
+					<input type="submit" value="Go" @click.prevent="submitData">
+					<input type="hidden" name="page" value="1">
+				</div>
+			</form>
+		</div>
+
+		<div id="footer">
+			<p>Members: Bao Jie, Lu Yuchen, Chen Qianlun, Chen Xiangling</p>
+			<p>School of information, Central University of Finance and Economics</p>
+		</div>
+	</div>
+
+	<script>
+		let { log } = console;
+		$(document).ready(function () {
+			$(document).click(function () {
+				$("#dropdown-content").slideUp(500);
+			});
+			$("#display-content").click(function () {
+				$("#dropdown-content").slideToggle(500);
+				event.stopPropagation();
+			});
+		});
+		let app = new Vue({
+			el: "#app",
+			data: {
+				inputData: "",
+				selected: "Fulltext",
+				selections: [{
+					name: "Correction"
+				}, {
+					name: "Wildcard"
+				}, {
+					name: "Fulltext"
+				}, {
+					name: "Phrase"
+				}],
+				results: []
+			},
+			methods: {
+				change(selection) {
+					this.selected = selection.name;
+				},
+				submitData() {
+					log(this.inputData);
+					if (this.selected === "Fulltext") {
+						let wordList = this.inputData.split(" ");
+						let flag = 0;
+						wordList.forEach((item, index) => {
+							if (/^[a-z]+$/.test(item) === false) {
+								alert("Bad input!");
+								flag = 1;
+							}
+						});
+						if (flag === 1) {
+							return;
+						}
+					} else if (this.selected === "Correction") {
+						let wordList = this.inputData.split(" ");
+						let count = 0;
+						let flag = 0;
+						wordList.forEach((item, index) => {
+							if (/^[a-z]+$/.test(item)) {
+								count++;
+							} else if (!/^\"[a-z]+\"$/.test(item)) {
+								flag = 1;
+							}
+						});
+						if (count === 0 || flag === 1) {
+							alert("Bad input!");
+							return;
+						}
+					} else if (this.selected === "Wildcard") {
+						let wordList = this.inputData.split(" ");
+						let count = 0;
+						let flag = 0;
+						wordList.forEach((item, index) => {
+							if (/^[a-z]*\*[a-z]*$/.test(item) && item.length > 1) {
+								count++;
+							} else if (!/^[a-z]+$/.test(item)) {
+								flag = 1;
+							}
+						});
+						if (count === 0 || flag === 1) {
+							alert("Bad input!");
+							return;
+						}
+					} else {
+						let wordList = this.inputData.split(" ");
+						let flag = 0;
+						wordList.forEach((item, index) => {
+							if (!/^[a-z]+$/.test(item)) {
+								flag = 1;
+							}
+						});
+						if (flag === 1) {
+							alert("Bad input!");
+							return;
+						}
+					}
+					location.href = `http://localhost:8000/Search?keywords=${this.inputData}&algorithm=${this.selected}`;
+				}
+			}
+		});
+	</script>
+</body>
+
+</html>
