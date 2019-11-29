@@ -29,3 +29,4 @@ Then you can start!
 - nltk (pip install nltk)
 - GCC
 
+Contact us with baojiecufe@gmail.com
